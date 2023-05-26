@@ -7,10 +7,12 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-
 <AnchorPane prefHeight="675.0" prefWidth="1161.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.damian.chatapp.controller.ClientController">
    <children>
-      <JFXTextArea fx:id="textArea" layoutX="42.0" layoutY="77.0" prefHeight="496.0" prefWidth="1048.0" />
+      <JFXTextArea fx:id="textArea" layoutX="42.0" layoutY="77.0" prefHeight="496.0" prefWidth="1048.0">
+         <font>
+            <Font name="System Bold" size="34.0" />
+         </font></JFXTextArea>
       <JFXTextField fx:id="msgField" layoutX="64.0" layoutY="592.0" onAction="#sendButtonOnAction" prefHeight="50.0" prefWidth="812.0" promptText="Type a message.">
          <font>
             <Font name="System Bold Italic" size="27.0" />
