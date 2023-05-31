@@ -34,7 +34,9 @@ public class HomeScreenController implements Initializable {
         new LightSpeedIn(t1).play();
         new LightSpeedIn(b1).play();
 
+        /*Starting the server👇*/
         Server.startServer();
+
 
 
     }
