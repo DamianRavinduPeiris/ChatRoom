@@ -15,6 +15,7 @@ public class Server {
 
     public static ArrayList<Socket> socketArrayList = new ArrayList<>();
     public static int index = 0;
+    public static ArrayList<Thread> threadList = new ArrayList<>();
 
 
     public static void startServer() {
@@ -58,6 +59,9 @@ public class Server {
 
     public static void handleClient(Socket socket) {
         new Thread(() -> {
+            /*Adding the current thread to an arrayList.*/
+            threadList.add(Thread.currentThread());
+
             String clientMsg = "";
             try {
                 while (true) {

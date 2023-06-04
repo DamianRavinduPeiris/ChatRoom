@@ -91,6 +91,10 @@ public class HomeScreenController implements Initializable {
                 new Thread(() -> {
                     try {
                         exitedClient.close();
+                        Server.threadList.get(exitedClientIndex).interrupt();
+
+
+
                     } catch (IOException e) {
                         Platform.runLater(() -> {
                             new Alert(Alert.AlertType.ERROR, "Error while exiting the client socket. : " + e.getLocalizedMessage()).show();
