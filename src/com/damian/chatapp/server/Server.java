@@ -24,8 +24,20 @@ public class Server {
             try {
                 ServerSocket ss = new ServerSocket(3000);
                 while (true) {
+
                     Socket socket = ss.accept();
                     socketArrayList.add(socket);
+                    /*Notifying the other clients who joined the chat.*/
+                    for (Socket s : socketArrayList) {
+                        if (s.getPort() == socket.getPort()) {
+                            // Avoid sending the message to the sender.
+                            continue;
+                        }
+                        DataOutputStream dos = new DataOutputStream(s.getOutputStream());
+                        int index = socketArrayList.indexOf(socket);
+                        dos.writeUTF(HomeScreenController.clientsNames.get(index) + " " + "has joined the chat.");
+                        dos.flush();
+                    }
                     System.out.println("Client connected to the server from port : " + socket.getPort());
 
                     /*Handling each client from a separate thread.👇*/
@@ -48,8 +60,8 @@ public class Server {
         new Thread(() -> {
             String clientMsg = "";
             try {
-                DataInputStream dis = new DataInputStream(socket.getInputStream());
-                while (!clientMsg.equalsIgnoreCase("Exit")) {
+                while (true) {
+                    DataInputStream dis = new DataInputStream(socket.getInputStream());
                     clientMsg = dis.readUTF();
                     /*Checking if an image has received.👇*/
                     /*Checking if the client sent an image.👇*/
@@ -58,20 +70,22 @@ public class Server {
                     } else {
                         sendMsgToOthers(clientMsg, socket);
                     }
+
+
                 }
-                socket.close();
-                dis.close();
-                socketArrayList.remove(socket);
+
+
             } catch (IOException e) {
-                Platform.runLater(() -> {
-                    new Alert(Alert.AlertType.ERROR, "Error while getting the input stream from the server : " + e.getLocalizedMessage()).show();
-                });
+                throw new RuntimeException(e);
+
+
             }
+
 
         }).start();
 
-
     }
+
 
     public static void handleReceivedImage(DataInputStream dis, Socket senderSocket) {
         try {
@@ -125,7 +139,6 @@ public class Server {
                 DataOutputStream dos = new DataOutputStream(s.getOutputStream());
                 /*Since socketArray index == clientsNames array client name index.*/
                 index = socketArrayList.indexOf(socket);
-                dos.writeUTF(HomeScreenController.clientsNames.get(index) + "  " + " joined the chat!🥳");
                 dos.writeUTF(HomeScreenController.clientsNames.get(index) + " : " + msg);
                 dos.flush();
             } catch (IOException e) {
@@ -137,5 +150,35 @@ public class Server {
         }
 
     }
+
+    /*public static void handleExits(Socket socket) {
+        int index = socketArrayList.indexOf(socket);
+        if (index != -1) {
+            for (Socket s : socketArrayList) {
+                if (s.getPort() == socket.getPort()) {
+                    //Avoid sending the message to the exited client.
+                    continue;
+                }
+                try {
+                    DataOutputStream dos = new DataOutputStream(s.getOutputStream());
+                    dos.writeUTF(HomeScreenController.clientsNames.get(index) + " has left the chat!");
+                    dos.flush();
+                } catch (IOException e) {
+                    new Alert(Alert.AlertType.ERROR, "Error while handling exit. : " + e.getLocalizedMessage()).show();
+                }
+
+            }
+            try {
+                socketArrayList.remove(socket);
+                HomeScreenController.clientsNames.remove(index);
+                socket.close();
+            } catch (IOException e) {
+                new Alert(Alert.AlertType.ERROR, "Error while closing the socket : " + e.getLocalizedMessage()).show();
+            }
+
+
+        }
+    }*/
+
 
 }

@@ -8,24 +8,23 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-
 <AnchorPane prefHeight="487.0" prefWidth="876.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.damian.chatapp.controller.HomeScreenController">
    <children>
-      <ImageView fx:id="i1" fitHeight="150.0" fitWidth="171.0" layoutX="354.0" layoutY="94.0" pickOnBounds="true" preserveRatio="true">
+      <ImageView fx:id="i1" fitHeight="150.0" fitWidth="171.0" layoutX="340.0" layoutY="135.0" pickOnBounds="true" preserveRatio="true">
          <image>
-            <Image url="@../assets/1.png" />
+            <Image url="@../assets/person.png" />
          </image>
       </ImageView>
-      <Label fx:id="l1" layoutX="325.0" layoutY="22.0" prefHeight="56.0" prefWidth="227.0" style="-fx-background-color: lightyellow;" text="WELCOME!">
+      <Label fx:id="l1" layoutX="308.0" layoutY="23.0" prefHeight="56.0" prefWidth="227.0" style="-fx-background-color: lightyellow;" text="WELCOME!">
          <font>
             <Font name="System Bold" size="39.0" />
          </font>
       </Label>
-      <JFXTextField fx:id="t1" layoutX="297.0" layoutY="292.0" onAction="#loginOnAction" prefHeight="56.0" prefWidth="309.0" promptText="Enter your name here...">
+      <JFXTextField fx:id="t1" layoutX="290.0" layoutY="334.0" onAction="#loginOnAction" prefHeight="56.0" prefWidth="309.0" promptText="Enter your name here...">
          <font>
-            <Font name="System Bold Italic" size="27.0" />
+            <Font name="Agency FB Bold" size="27.0" />
          </font>
       </JFXTextField>
-      <JFXButton fx:id="b1" layoutX="377.0" layoutY="417.0" onAction="#loginOnAction" prefHeight="31.0" prefWidth="137.0" style="-fx-background-color: lightgreen;" text="LOGIN." />
+      <JFXButton fx:id="b1" layoutX="346.0" layoutY="428.0" onAction="#loginOnAction" prefHeight="31.0" prefWidth="137.0" style="-fx-background-color: lightgreen;" text="LOGIN." />
    </children>
 </AnchorPane>

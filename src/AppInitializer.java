@@ -20,8 +20,12 @@ public class AppInitializer extends Application {
             primaryStage.getIcons().add(new Image("com/damian/chatapp/assets/logo.png"));
             primaryStage.setTitle("Home.");
             primaryStage.show();
+            primaryStage.setResizable(false);
+            primaryStage.setOnCloseRequest(event -> {
+                System.exit(0);
+            });
         } catch (IOException e) {
-            new Alert(Alert.AlertType.ERROR,"Error while loading the Home UI : "+e.getLocalizedMessage()).show();
+            new Alert(Alert.AlertType.ERROR, "Error while loading the Home UI : " + e.getLocalizedMessage()).show();
         }
 
     }

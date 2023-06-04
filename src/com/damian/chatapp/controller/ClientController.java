@@ -1,5 +1,6 @@
 package com.damian.chatapp.controller;
 
+import animatefx.animation.FadeIn;
 import animatefx.animation.LightSpeedIn;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXTextArea;
@@ -8,13 +9,14 @@ import javafx.application.Platform;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.event.ActionEvent;
 import javafx.fxml.Initializable;
-import javafx.scene.Node;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
+import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
@@ -31,15 +33,20 @@ public class ClientController implements Initializable {
     public JFXButton sendButton;
     public Label l1;
 
-    public Socket socket;
+    public  Socket socket;
 
     public DataInputStream dis;
     public DataOutputStream dos;
     public Button imageButton;
     public VBox imageContainer;
-    public ImageView iView;
 
-    public String  msg ;
+    public String msg;
+    public VBox vB;
+    public JFXTextArea clientTextArea;
+    public JFXButton cc;
+
+
+
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -48,8 +55,11 @@ public class ClientController implements Initializable {
         new LightSpeedIn(sendButton).play();
         new LightSpeedIn(l1).play();
         new LightSpeedIn(imageButton).play();
+        new LightSpeedIn(cc).play();
+        new FadeIn(vB).play();
 
         l1.setText("WELCOME " + HomeScreenController.clientName + " !");
+        setLabelWidth(l1, l1.getText());
 
         new Thread(() -> {
 
@@ -63,21 +73,26 @@ public class ClientController implements Initializable {
                     if (msg.equals("<Image>")) {
                         handleReceivedImage(dis);
                     } else {
-                        textArea.appendText(msg+ "\n");
+                        textArea.appendText(msg + "\n");
                     }
-
-
                 }
+
             } catch (IOException e) {
                 Platform.runLater(() -> {
                     new Alert(Alert.AlertType.ERROR, "Error while connecting to the server ! : " + e.getLocalizedMessage()).show();
                 });
-
             }
 
         }).start();
 
 
+    }
+
+    public void setLabelWidth(Label label, String text) {
+        Text textNode = new Text("Welcome : " + HomeScreenController.clientName + " !");
+        textNode.setFont(label.getFont());
+        double textWidth = textNode.getLayoutBounds().getWidth();
+        label.setPrefWidth(textWidth);
     }
 
     public void sendButtonOnAction(ActionEvent actionEvent) {
@@ -86,8 +101,8 @@ public class ClientController implements Initializable {
 
         } else {
             new Thread(() -> {
-                if (!msgField.getText().equalsIgnoreCase("exit")) {
-                    textArea.appendText("ME : " + msgField.getText() + "\n");
+
+                    clientTextArea.appendText("ME : " + msgField.getText() + "\n");
                     try {
                         dos = new DataOutputStream(socket.getOutputStream());
                         dos.writeUTF(msgField.getText());
@@ -97,16 +112,11 @@ public class ClientController implements Initializable {
                         new Alert(Alert.AlertType.ERROR, "Error while sending the message ! : " + e.getLocalizedMessage()).show();
                     }
 
-                } else {
-                    try {
-                        socket.close();
-                        dis.close();
-                        dos.close();
-                    } catch (IOException e) {
-                        throw new RuntimeException(e);
-                    }
 
-                }
+
+
+
+
 
 
             }).start();
@@ -132,7 +142,12 @@ public class ClientController implements Initializable {
             /* Create an ImageView with the Image.👇*/
             ImageView imageView = new ImageView(image);
             imageView.setPreserveRatio(true);
-            imageView.setFitWidth(200); // Adjust the width as needed
+            imageView.setFitWidth(500);
+            imageView.setFitHeight(500);
+
+            //ADD A scroll pane to the image container.👇
+            ScrollPane scrollPane = new ScrollPane();
+            scrollPane.setContent(imageView);
 
             /* Append the ImageView to the imageContainer.👇*/
             Platform.runLater(() -> imageContainer.getChildren().add(imageView));
@@ -175,15 +190,22 @@ public class ClientController implements Initializable {
                 /*Appending the image to the text area.👇*/
                 /* Convert the image data to an Image.👇*/
                 ByteArrayInputStream bais = new ByteArrayInputStream(imageData);
+                BufferedImage bufferredImage = ImageIO.read(bais);
                 Image image1 = new Image(bais);
-                /* Create an ImageView with the Image👇*/
-                iView = new ImageView();
+                /* Convert BufferedImage to JavaFX Image.👇*/
+                Image image2 = SwingFXUtils.toFXImage(bufferedImage, null);
 
-                /*Setting the image to the client UI.👇*/
-                iView.setImage(image1);
-                imageContainer.getChildren().add(iView);
-                iView.setPreserveRatio(true);
-                iView.setFitWidth(200); // Adjust the width as needed
+                /* Create an ImageView with the Image.👇*/
+                ImageView imageView = new ImageView(image2);
+                imageView.setPreserveRatio(true);
+                imageView.setFitWidth(500);
+                imageView.setFitHeight(500);
+                //ADD A scroll pane to the image container.👇
+                ScrollPane scrollPane = new ScrollPane();
+                scrollPane.setContent(imageView);
+
+                /* Append the ImageView to the imageContainer.👇*/
+                Platform.runLater(() -> imageContainer.getChildren().add(imageView));
 
 
             } catch (IOException e) {
@@ -194,4 +216,12 @@ public class ClientController implements Initializable {
             new Alert(Alert.AlertType.ERROR, "Error while selecting the image !").show();
         }
     }
+
+    public void ccOnAction(ActionEvent actionEvent) {
+        clientTextArea.clear();
+        textArea.clear();
+        vB.getChildren().clear();
+    }
+
+
 }
