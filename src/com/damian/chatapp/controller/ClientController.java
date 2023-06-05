@@ -6,17 +6,25 @@ import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXTextArea;
 import com.jfoenix.controls.JFXTextField;
 import javafx.application.Platform;
+import javafx.beans.value.ChangeListener;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.event.ActionEvent;
 import javafx.fxml.Initializable;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
+import javafx.scene.Group;
+import javafx.scene.Parent;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
+import javafx.scene.text.TextFlow;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
@@ -28,35 +36,33 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 public class ClientController implements Initializable {
-    public JFXTextArea textArea;
+
     public JFXTextField msgField;
     public JFXButton sendButton;
     public Label l1;
 
-    public  Socket socket;
+    public Socket socket;
 
     public DataInputStream dis;
     public DataOutputStream dos;
     public Button imageButton;
-    public VBox imageContainer;
 
     public String msg;
-    public VBox vB;
-    public JFXTextArea clientTextArea;
+
+
     public JFXButton cc;
-
-
+    public VBox otherTextBox;
+    public VBox myTextBox;
 
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        new LightSpeedIn(textArea).play();
         new LightSpeedIn(msgField).play();
         new LightSpeedIn(sendButton).play();
         new LightSpeedIn(l1).play();
         new LightSpeedIn(imageButton).play();
         new LightSpeedIn(cc).play();
-        new FadeIn(vB).play();
+
 
         l1.setText("WELCOME " + HomeScreenController.clientName + " !");
         setLabelWidth(l1, l1.getText());
@@ -73,7 +79,37 @@ public class ClientController implements Initializable {
                     if (msg.equals("<Image>")) {
                         handleReceivedImage(dis);
                     } else {
-                        textArea.appendText(msg + "\n");
+                        HBox hBox = new HBox();
+
+
+
+
+
+
+                        Text text = new Text(msg);
+                        text.setFill(Color.color(0.934, 0.945, 0.996));
+                        text.setStyle("-fx-font-size: 20px;");
+                        text.setText(msg);
+
+                        TextFlow textFlow = new TextFlow(text);
+                        textFlow.setStyle("-fx-color : rgb(239, 242, 255);" +
+                                "-fx-background-color: rgb(15, 125, 242);" +
+                                "-fx-background-radius: 20px");
+                        textFlow.setPadding(new Insets(5, 10, 8, 10));
+
+                        hBox.setAlignment(Pos.CENTER_RIGHT);
+                        hBox.setPadding(new Insets(5, 5, 5, 10));
+                        hBox.getChildren().add(textFlow);
+
+                        Platform.runLater(new Runnable() {
+                            @Override
+                            public void run() {
+                                otherTextBox.getChildren().add(hBox);
+                                new LightSpeedIn(hBox).play();
+                            }
+                        });
+
+
                     }
                 }
 
@@ -84,7 +120,6 @@ public class ClientController implements Initializable {
             }
 
         }).start();
-
 
     }
 
@@ -102,27 +137,47 @@ public class ClientController implements Initializable {
         } else {
             new Thread(() -> {
 
-                    clientTextArea.appendText("ME : " + msgField.getText() + "\n");
-                    try {
-                        dos = new DataOutputStream(socket.getOutputStream());
-                        dos.writeUTF(msgField.getText());
-                        dos.flush();
-                        msgField.clear();
-                    } catch (IOException e) {
-                        new Alert(Alert.AlertType.ERROR, "Error while sending the message ! : " + e.getLocalizedMessage()).show();
+                HBox hBox = new HBox();
+
+                Text text = new Text(msgField.getText());
+                text.setFill(Color.color(0.934, 0.945, 0.996));
+                text.setStyle("-fx-font-size: 20px;");
+                text.setText("Me : " + msgField.getText());
+
+                TextFlow textFlow = new TextFlow(text);
+                textFlow.setStyle("-fx-color : rgb(239, 242, 255);" +
+                        "-fx-background-color: rgb(15, 125, 242);" +
+                        "-fx-background-radius: 20px");
+                textFlow.setPadding(new Insets(5, 10, 8, 10));
+
+                hBox.setAlignment(Pos.CENTER_RIGHT);
+                hBox.setPadding(new Insets(5, 5, 5, 10));
+                hBox.getChildren().add(textFlow);
+
+                Platform.runLater(new Runnable() {
+                    @Override
+                    public void run() {
+                        myTextBox.getChildren().add(hBox);
+                        new LightSpeedIn(hBox).play();
+
                     }
-
-
-
-
-
-
+                });
+                try {
+                    dos = new DataOutputStream(socket.getOutputStream());
+                    dos.writeUTF(msgField.getText());
+                    dos.flush();
+                    msgField.clear();
+                } catch (IOException e) {
+                    new Alert(Alert.AlertType.ERROR, "Error while sending the message ! : " + e.getLocalizedMessage()).show();
+                }
 
 
             }).start();
+
         }
 
     }
+
 
     private void handleReceivedImage(DataInputStream dis) {
         try {
@@ -150,7 +205,7 @@ public class ClientController implements Initializable {
             scrollPane.setContent(imageView);
 
             /* Append the ImageView to the imageContainer.👇*/
-            Platform.runLater(() -> imageContainer.getChildren().add(imageView));
+            Platform.runLater(() -> otherTextBox.getChildren().add(imageView));
         } catch (IOException e) {
             Platform.runLater(() -> {
                 new Alert(Alert.AlertType.ERROR, "Error while handling the received image: " + e.getLocalizedMessage()).show();
@@ -205,7 +260,7 @@ public class ClientController implements Initializable {
                 scrollPane.setContent(imageView);
 
                 /* Append the ImageView to the imageContainer.👇*/
-                Platform.runLater(() -> imageContainer.getChildren().add(imageView));
+                Platform.runLater(() -> myTextBox.getChildren().add(imageView));
 
 
             } catch (IOException e) {
@@ -218,9 +273,8 @@ public class ClientController implements Initializable {
     }
 
     public void ccOnAction(ActionEvent actionEvent) {
-        clientTextArea.clear();
-        textArea.clear();
-        vB.getChildren().clear();
+        myTextBox.getChildren().clear();
+        otherTextBox.getChildren().clear();
     }
 
 
