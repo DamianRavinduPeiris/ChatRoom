@@ -28,10 +28,10 @@ public class Server {
 
                     Socket socket = ss.accept();
                     socketArrayList.add(socket);
-                    /*Notifying the other clients who joined the chat.*/
+                    /*Notifying the other clients who joined the chat.👇*/
                     for (Socket s : socketArrayList) {
                         if (s.getPort() == socket.getPort()) {
-                            // Avoid sending the message to the sender.
+                            /*Avoid sending the message to the sender.👇*/
                             continue;
                         }
                         DataOutputStream dos = new DataOutputStream(s.getOutputStream());
@@ -109,7 +109,7 @@ public class Server {
         for (Socket s : socketArrayList) {
             try {
                 if (s.getPort() == senderSocket.getPort()) {
-                    // Avoid sending the image to the sender.
+                     /*Avoid sending the image to the sender.👇*/
                     continue;
                 }
                 DataOutputStream dos = new DataOutputStream(s.getOutputStream());

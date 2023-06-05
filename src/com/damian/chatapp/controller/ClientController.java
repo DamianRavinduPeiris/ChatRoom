@@ -1,19 +1,14 @@
 package com.damian.chatapp.controller;
 
-import animatefx.animation.FadeIn;
 import animatefx.animation.LightSpeedIn;
 import com.jfoenix.controls.JFXButton;
-import com.jfoenix.controls.JFXTextArea;
 import com.jfoenix.controls.JFXTextField;
 import javafx.application.Platform;
-import javafx.beans.value.ChangeListener;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.event.ActionEvent;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.Group;
-import javafx.scene.Parent;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -79,13 +74,8 @@ public class ClientController implements Initializable {
                     if (msg.equals("<Image>")) {
                         handleReceivedImage(dis);
                     } else {
+                        /*If it was a normal msg.👇*/
                         HBox hBox = new HBox();
-
-
-
-
-
-
                         Text text = new Text(msg);
                         text.setFill(Color.color(0.934, 0.945, 0.996));
                         text.setStyle("-fx-font-size: 20px;");
