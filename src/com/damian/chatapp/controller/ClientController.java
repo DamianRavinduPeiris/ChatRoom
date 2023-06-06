@@ -40,7 +40,7 @@ public class ClientController implements Initializable {
 
     public DataInputStream dis;
     public DataOutputStream dos;
-    public Button imageButton;
+    public JFXButton imageButton;
 
     public String msg;
 
@@ -87,7 +87,7 @@ public class ClientController implements Initializable {
                                 "-fx-background-radius: 20px");
                         textFlow.setPadding(new Insets(5, 10, 8, 10));
 
-                        hBox.setAlignment(Pos.CENTER_RIGHT);
+                        hBox.setAlignment(Pos.CENTER_LEFT);
                         hBox.setPadding(new Insets(5, 5, 5, 10));
                         hBox.getChildren().add(textFlow);
 
