@@ -4,7 +4,6 @@ import animatefx.animation.LightSpeedIn;
 import com.damian.chatapp.server.Server;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXTextField;
-import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -16,9 +15,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
 
-import java.io.DataOutputStream;
 import java.io.IOException;
-import java.net.Socket;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
@@ -70,38 +67,7 @@ public class HomeScreenController implements Initializable {
             // Handling the user's response.
             ButtonType result = alert.showAndWait().orElse(ButtonType.CANCEL);
             if (result == ButtonType.OK) {
-                exitedClientIndex = clientsNames.indexOf(primaryStage.getTitle());
-                Socket exitedClient = Server.socketArrayList.get(exitedClientIndex);
-                for (Socket s : Server.socketArrayList) {
-                    if (s.getPort() == exitedClient.getPort()) {
-                        continue;
-
-                    }
-                    try {
-                        DataOutputStream dos = new DataOutputStream(s.getOutputStream());
-                        dos.writeUTF(primaryStage.getTitle() + " has left the chat!");
-                        dos.flush();
-                    } catch (IOException e) {
-                        Platform.runLater(() -> {
-                            new Alert(Alert.AlertType.ERROR, "Error while handling the client exit! : " + e.getLocalizedMessage()).show();
-                        });
-                    }
-
-                }
-                new Thread(() -> {
-                    try {
-                        exitedClient.close();
-                        Server.threadList.get(exitedClientIndex).interrupt();
-
-
-
-                    } catch (IOException e) {
-                        Platform.runLater(() -> {
-                            new Alert(Alert.AlertType.ERROR, "Error while exiting the client socket. : " + e.getLocalizedMessage()).show();
-                        });
-                    }
-                });
-
+                Server.handleExitedClient(clientsNames.indexOf(primaryStage.getTitle()));
                 primaryStage.close();
 
 

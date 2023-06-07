@@ -155,34 +155,38 @@ public class Server {
 
     }
 
-    /*public static void handleExits(Socket socket) {
-        int index = socketArrayList.indexOf(socket);
-        if (index != -1) {
-            for (Socket s : socketArrayList) {
-                if (s.getPort() == socket.getPort()) {
-                    //Avoid sending the message to the exited client.
-                    continue;
-                }
-                try {
-                    DataOutputStream dos = new DataOutputStream(s.getOutputStream());
-                    dos.writeUTF(HomeScreenController.clientsNames.get(index) + " has left the chat!");
-                    dos.flush();
-                } catch (IOException e) {
-                    new Alert(Alert.AlertType.ERROR, "Error while handling exit. : " + e.getLocalizedMessage()).show();
-                }
+    public static void handleExitedClient(int exitedClientIndex){
+        Socket exitedClient = Server.socketArrayList.get(exitedClientIndex);
+        for (Socket s : Server.socketArrayList) {
+            if (s.getPort() == exitedClient.getPort()) {
+                continue;
 
             }
             try {
-                socketArrayList.remove(socket);
-                HomeScreenController.clientsNames.remove(index);
-                socket.close();
+                DataOutputStream dos = new DataOutputStream(s.getOutputStream());
+                dos.writeUTF(HomeScreenController.clientsNames.get(exitedClientIndex) + " has left the chat!");
+                dos.flush();
             } catch (IOException e) {
-                new Alert(Alert.AlertType.ERROR, "Error while closing the socket : " + e.getLocalizedMessage()).show();
+                Platform.runLater(() -> {
+                    new Alert(Alert.AlertType.ERROR, "Error while handling the client exit! : " + e.getLocalizedMessage()).show();
+                });
             }
 
-
         }
-    }*/
+        /*Closing the socket and interrupting the relevant thread.👇*/
+        new Thread(() -> {
+            try {
+                exitedClient.close();
+                Server.threadList.get(exitedClientIndex).interrupt();
+
+            } catch (IOException e) {
+                Platform.runLater(() -> {
+                    new Alert(Alert.AlertType.ERROR, "Error while exiting the client socket. : " + e.getLocalizedMessage()).show();
+                });
+            }
+        });
+
+    }
 
 
 }
