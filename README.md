@@ -9,7 +9,10 @@
   
   
   
-![image](https://github.com/DamianRavinduPeiris/ChatRoom/assets/115478137/4f4e9976-c64b-46b3-8059-a85ab94b5ac9)
+  
+  
+![image](https://github.com/DamianRavinduPeiris/ChatRoom/assets/115478137/ecaf31d9-4586-42f4-a9f9-9a2455909576)
+
 
   
   
