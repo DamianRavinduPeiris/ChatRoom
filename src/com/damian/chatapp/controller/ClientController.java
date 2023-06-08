@@ -4,13 +4,14 @@ import animatefx.animation.LightSpeedIn;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXTextField;
 import javafx.application.Platform;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.event.ActionEvent;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.image.Image;
@@ -46,8 +47,8 @@ public class ClientController implements Initializable {
 
 
     public JFXButton cc;
-    public VBox otherTextBox;
     public VBox myTextBox;
+    public ScrollPane sp;
 
 
     @Override
@@ -59,6 +60,20 @@ public class ClientController implements Initializable {
         new LightSpeedIn(cc).play();
 
 
+       /*Detecting the height changes in the Vbox👇*/
+        ChangeListener<Number> heightListener = new ChangeListener<Number>() {
+            @Override
+            public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
+                /*Check if the height has changed.👇*/
+                if (newValue.doubleValue() != oldValue.doubleValue()) {
+                   /*Scroll to the last point.👇*/
+                    sp.setVvalue(1.0);
+                }
+            }
+        };
+
+        // Bind the height of the VBox to the height of the ScrollPane's viewport
+        myTextBox.heightProperty().addListener(heightListener);
         l1.setText("WELCOME " + HomeScreenController.clientName + " !");
         setLabelWidth(l1, l1.getText());
 
@@ -94,7 +109,7 @@ public class ClientController implements Initializable {
                         Platform.runLater(new Runnable() {
                             @Override
                             public void run() {
-                                otherTextBox.getChildren().add(hBox);
+                                myTextBox.getChildren().add(hBox);
                                 new LightSpeedIn(hBox).play();
                             }
                         });
@@ -195,7 +210,7 @@ public class ClientController implements Initializable {
             scrollPane.setContent(imageView);
 
             /* Append the ImageView to the imageContainer.👇*/
-            Platform.runLater(() -> otherTextBox.getChildren().add(imageView));
+            Platform.runLater(() -> myTextBox.getChildren().add(imageView));
         } catch (IOException e) {
             Platform.runLater(() -> {
                 new Alert(Alert.AlertType.ERROR, "Error while handling the received image: " + e.getLocalizedMessage()).show();
@@ -264,7 +279,7 @@ public class ClientController implements Initializable {
 
     public void ccOnAction(ActionEvent actionEvent) {
         myTextBox.getChildren().clear();
-        otherTextBox.getChildren().clear();
+
     }
 
 
