@@ -7,11 +7,11 @@
   
 ✅ Can send `images` and `emojis`.
   
+  ![image](https://github.com/DamianRavinduPeiris/ChatRoom/assets/115478137/c1dcf3fb-a5ab-4728-b27c-343b7666e2a5)
+
   
   
   
-  
-![image](https://github.com/DamianRavinduPeiris/ChatRoom/assets/115478137/ecaf31d9-4586-42f4-a9f9-9a2455909576)
 
 
   
